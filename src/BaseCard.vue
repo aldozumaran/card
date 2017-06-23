@@ -19,19 +19,19 @@
             <header class="card-header" v-if="!!this.$slots.header || title">
                 <slot name="header">
                     <p class="card-header-title">{{ title }}</p>
-                    <a class="card-header-icon" v-if="!!this.icon">
+                    <a class="card-header-icon" v-if="!!this.icon" @click.prevent="toggle">
                         <span class="icon">
-                        <i class="fa" :class="[`fa-${icon}`]"></i>
+                        <i class="fa" :class="[`fa-${arrow}`]"></i>
                         </span>
                     </a>
                 </slot>
             </header>
-            <div class="card-content">
+            <div class="card-content" v-if="show">
                 <slot name="content">
                     {{ content }}
                 </slot>
             </div>
-            <footer class="card-footer" v-if="!!this.$slots.footer">
+            <footer class="card-footer" v-if="!!this.$slots.footer && show">
                 <slot name="footer"></slot>
             </footer>
         </div>
@@ -47,16 +47,29 @@
             img: String,
             alt: String,
             icon: String,
+            iconInverse: String,
             content: String,
             transition: {
                 type: String,
                 default: 'fade'
             }
         },
-
+        data(){
+            return {
+                show: true,
+                arrow: this.icon
+            }
+        },
         methods: {
             afterLeave () {
                 this.$destroy()
+            },
+            toggle(){
+                if (this.iconInverse) {
+                    this.arrow = this.arrow === this.icon ? this.iconInverse : this.icon;
+                }
+
+                this.show = !this.show;
             }
         },
 
